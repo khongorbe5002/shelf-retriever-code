@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <style>
+        html { font-family: "Press Start 2P"; display: inline-block; margin: 0px auto; text-align: center;}
+        .text {position: absolute; top: 5%; left: 10%; font-size: 15px;}
+        .button { background-color: #0036b5; border: none; color: white; width: 150px; height: 50px; text-decoration: none; font-family: "Press Start 2P"; font-size: 10px; margin: 2px; cursor: pointer;}
+        .button2 { background-color: #980000;}
+        .content {
+                    width: 200px;
+                    height: 200px;
+                    border: 8px solid #c3c3c3;
+                    display: flex;
+                    justify-content: center;
+                    margin: auto;
+
+
+                    gap: 10px;
+                    gap: 10px 10px; /* row-gap column gap */
+                    row-gap: 10px;
+                    column-gap: 20px;
+                }
+        #col-rev {flex-direction: column-reverse;}
+
+        #row-rev {flex-direction: row-reverse;}
+
+        .red {background-color: red;}
+
+        .lightblue {background-color: lightblue;}
+
+        .yellow {background-color: yellow;}
+
+        .press-start-2p-regular {
+            font-family: "Press Start 2P", system-ui;
+            font-weight: 400;
+            font-style: normal;
+            }
+
+
+        #flexbox {
+            display: flex;
+            flex-wrap: wrap;
+            flex-flow: row;
+            row-gap: 20px;
+        }
+
+        #flexbox1 {
+            display: flex;
+            flex-wrap: wrap;
+            flex-flow: column;
+            column-gap: 20px;
+            justify-self: center;
+        }
+
+        #flexbox2 {
+            display: flex;
+            flex-wrap: wrap;
+            flex-flow: column;
+            column-gap: 10px;
+        }
+
+        .spacer{
+            padding-bottom: 20px;
+        }
+        
+
+
+    </style>
+
+
+
+
+
+    <title>ACRS(TEAM7)</title>
+</head>
+<body>
+    <h1>Control System</h1>
+
+    <p class="spacer"> By Maya, Katie, Jona, Gabbie, Chelsea, Honey</p>
+
+    <!-- MOTOR A Controls -->
+
+    <div id="flexbox1">
+
+    <div id="flexbox">
+        <div id="flexbox2" class="content">
+            <p>UNIT 1</span></p> 
+            <p><a href="/17/on"><button class="button">RETRIEVE</button></a>
+            <a href="/17/off"><button class="button button2">STORE</button></a></p>
+        </div>
+
+        <div id="flexbox2" class="content">
+            <p>UNIT 2</span></p>
+            <p><a href="/16/on"><button class="button ">RETRIEVE</button></a>
+            <a href="/16/off"><button class="button button2 ">STORE</button></a></p>
+        </div>
+    </div>
+
+    <!-- MOTOR B Controls -->
+    <div id="flexbox">
+        <div id="flexbox2" class="content">
+            <p>UNIT 3</p> 
+            <p><a href="/18/on"><button class="button">RETRIEVE</button></a>
+            <a href="/18/off"><button class="button button2">STORE</button></a></p>
+        </div>
+
+        <div id="flexbox2" class="content">
+            <p>UNIT 4</span></p>
+            <p><a href="/19/on"><button class="button ">RETRIEVE</button></a>
+            <a href="/19/off"><button class="button button2 ">STORE</button></a></p>
+        </div>
+    </div>
+
+    </div>
+
+
+
+</body>
+</html>
