@@ -66,6 +66,7 @@
 
         .spacer{
             padding-bottom: 20px;
+            font-size: 10px;
         }
         
 
