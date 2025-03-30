@@ -22,7 +22,7 @@ String unit2= "off";
 String unit3= "off";
 String unit4= "off";
 
-/ Assign output variables to GPIO pins
+// Assign output variables to GPIO pins
 
 // Motor A
 int output17 = 17; 
@@ -138,9 +138,11 @@ void loop(){
             if (header.indexOf("GET /UNIT1/retrieve") >= 0) {
                 Serial.println("Unit 1 Retrieving...");
                 unit1 = "retrieve";
-                //digitalWrite(,);
-                //analogWrite(,);
-                //delay(..); etc
+                digitalWrite(output17, HIGH);
+                digitalWrite(output16, LOW);
+                analogWrite(output17, dutyCycle);
+                analogWrite(output16, 0);
+                delay(1000);
               
               
             } else if (header.indexOf("GET /UNIT1/store") >= 0) {
@@ -152,7 +154,7 @@ void loop(){
 
             } else if (header.indexOf("GET /UNIT1/off") >= 0) {
                 Serial.println("Unit 1 off");
-                unit1 = "off"
+                unit1 = "off";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
@@ -185,7 +187,7 @@ void loop(){
                 //analogWrite(,);
                 //delay(..); etc;
 
-            } else if (header.indexOf("GET /UNIT3/store/on") >= 0) {
+            } else if (header.indexOf("GET /UNIT3/store") >= 0) {
                 Serial.println("Unit 3 Storing...");
                 unit3 = "store";
                 //digitalWrite(,);
@@ -214,8 +216,8 @@ void loop(){
                 //delay(..); etc
 
             } else if (header.indexOf("GET /UNIT4/off") >= 0) {
-                Serial.println("Unit 3 off");
-                unit3 = "off";
+                Serial.println("Unit 4 off");
+                unit4 = "off";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
@@ -333,7 +335,7 @@ client.println("<body>");
 
     //formatting
 
-        client.println("</div>")
+       client.println("</div>");
         
         client.println( "<div id=\"flexbox\">");
 
@@ -374,10 +376,10 @@ client.println("<body>");
     //formatting
 
         client.println("</div>");
-`   
+   
         client.println("</body></html>");
 
-        / The HTTP response ends with another blank line
+        //The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
             break;
