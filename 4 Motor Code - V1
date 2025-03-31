@@ -6,7 +6,7 @@
 #include <driver/ledc.h>
 
 // Replace with your network credentials
-const char* ssid     = "ESP32-Access-Point-1";
+const char* ssid     = "ESP32-B";
 const char* password = "123456789";
 
 // Set web server port number to 80
