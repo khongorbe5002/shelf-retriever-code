@@ -239,6 +239,7 @@ client.println("html { font-family: \"Press Start 2P\"; display: inline-block; m
 client.println(".text {position: absolute; top: 5%; left: 10%; font-size: 15px;}");
 client.println(".button { background-color: #0036b5; border: none; color: white; width: 150px; height: 50px; text-decoration: none; font-family: \"Press Start 2P\"; font-size: 10px; margin: 2px; cursor: pointer;}");
 client.println(".button2 { background-color: #980000;}");
+client.println(".button3{ background-color: #808080}")
 client.println(".content {");
 client.println("    width: 200px;");
 client.println("    height: 200px;");
