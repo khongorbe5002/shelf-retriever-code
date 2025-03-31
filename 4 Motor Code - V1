@@ -54,8 +54,8 @@ int enable3Pin = 13;
 
 // Motor D
 
-int output27 = 27;
-int output26 = 26;
+int output27 = 32;
+int output26 = 33;
 int enable4Pin = 25;
 
 // Setting PWM properties
@@ -63,6 +63,7 @@ const int freq = 30000;
 const int pwmChannel = 0;
 const int resolution = 8;
 int dutyCycle = 200;
+int dutyCycleC = 200;
 
 
 void setup() {
@@ -158,6 +159,9 @@ void loop(){
               output17State = "on";
               digitalWrite(output17, HIGH);
               analogWrite(enable1Pin, dutyCycle);
+              output18State = "on";
+              digitalWrite(output18, HIGH);
+              analogWrite(enable2Pin, dutyCycle);
               //ledcWrite(pwmChannel, dutyCycle);
               
             } else if (header.indexOf("GET /17/off") >= 0) {
@@ -165,6 +169,9 @@ void loop(){
               output17State = "off";
               digitalWrite(output17, LOW);
               analogWrite(enable1Pin, 0); 
+              output18State = "off";
+              digitalWrite(output18, LOW);
+              analogWrite(enable2Pin, 0);
               //ledcWrite(pwmChannel, 0);
 
             } else if (header.indexOf("GET /16/on") >= 0) {
@@ -172,12 +179,19 @@ void loop(){
               output16State = "on";
               digitalWrite(output16, HIGH);
               analogWrite(enable1Pin, dutyCycle);
+              output19State = "on";
+              digitalWrite(output19, HIGH);
+              analogWrite(enable2Pin, dutyCycle);
               //ledcWrite(pwmChannel, dutyCycle);
             } else if (header.indexOf("GET /16/off") >= 0) {
               Serial.println("GPIO 16 off");
               output16State = "off";
               digitalWrite(output16, LOW);
               analogWrite(enable1Pin, 0);
+              output19State = "off";
+              digitalWrite(output19, LOW);
+              analogWrite(enable2Pin, 0); 
+              //ledcWrite(pwmChannel, 0);
               //ledcWrite(pwmChannel, 0);
 
               
@@ -217,7 +231,7 @@ void loop(){
               Serial.println("GPIO 14 on");
               output14State = "on";
               digitalWrite(output14, HIGH);
-              analogWrite(enable3Pin, dutyCycle); 
+              analogWrite(enable3Pin, dutyCycleC); 
             } else if (header.indexOf("GET /14/off") >= 0) {
               Serial.println("GPIO 14 off");
               output14State = "off";
@@ -227,7 +241,8 @@ void loop(){
               Serial.println("GPIO 12 on");
               output12State = "on";
               digitalWrite(output12, HIGH);
-              analogWrite(enable3Pin, dutyCycle);
+              analogWrite(enable3Pin, dutyCycleC);
+              
             } else if (header.indexOf("GET /12/off") >= 0) {
               Serial.println("GPIO 12 off");
               output12State = "off";
