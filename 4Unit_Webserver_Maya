@@ -1,4 +1,4 @@
-// final code v1
+// WebServer code, moves each unit individually
 
 // Load Wi-Fi library
 #include <WiFi.h>
@@ -281,16 +281,25 @@ void loop(){
 client.println("<!DOCTYPE html><html>");
 client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
 client.println("<link rel=\"icon\" href=\"data:,\">");
-client.println("<style>html { font-family: monospace; display: inline-block; margin: 0px auto; text-align: center;}");
-client.println(".container { display: inline-grid; grid-template-columns: repeat(2, 1fr); grid-gap: 0px; padding: 20px;}");
-client.println(".unit-header { grid-column: span 2; font-size: 24px; font-weight: bold;  justify-content: center; align-items: center;}");
-client.println(".button { padding: 16px 40px; font-size: 20px; margin: 5px; cursor: pointer; border: none; color: white;}");
-client.println(".button.store { background-color: #FF6347; }"); // Muted red for "Store"
-client.println(".button.retrieve { background-color: #4CAF50; }"); // Green for "Retrieve"
-client.println(".button.disabled { background-color: #A9A9A9; cursor: pointer; border: none; color: white;}"); // Grey for disabled buttons
+
+// CSS Styles
+client.println("<style>");
+client.println("html { font-family: monospace; display: inline-block; margin: 0px auto; text-align: center; position: relative;}");
+client.println(".square { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 55%; height: 550px; background-color: #B3CBB3; border-radius: 50px; z-index: -1; }");
+client.println(".container { display: inline-grid; grid-template-columns: repeat(2, 1fr); grid-gap: 0px; padding: 20px; position: relative;}");
+client.println(".unit-header { grid-column: span 2; font-size: 30px; font-weight: bold; justify-content: center; align-items: center; top: 25px}");
+client.println(".button { font-family: monospace; padding: 16px 40px; font-size: 20px; margin: 5px; cursor: pointer; border: none; color: white;}");
+client.println(".button.store { background-color: #8E1F27; }"); // Muted red for "Store"
+client.println(".button.retrieve { background-color: #1C6A3F; }"); // Green for "Retrieve"
+client.println(".button.off { background-color: #646259; cursor: pointer; border: none; color: white;}"); // Grey for disabled buttons
 client.println("</style></head>");
+
 client.println("<body><h1>Automated Retrieval and Storage System</h1>");
 
+// Add the light green square background
+client.println("<div class='square'></div>");
+
+// Start button container
 client.println("<div class=\"container\">");
 
 // Unit 1
@@ -378,4 +387,8 @@ client.println("</body></html>");
         
         
         
-    
+            
+
+
+            
+
