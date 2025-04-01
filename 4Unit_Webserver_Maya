@@ -1,0 +1,381 @@
+// final code v1
+
+// Load Wi-Fi library
+#include <WiFi.h>
+#include <Arduino.h>
+#include <driver/ledc.h>
+
+// Replace with your network credentials
+const char* ssid     = "ESP32-Access-Point-1";
+const char* password = "123456789";
+
+// Set web server port number to 80
+WiFiServer server(80);
+
+// Variable to store the HTTP request
+String header;
+
+
+// Auxiliar variables to store the current output state
+String unit1_store= "off";
+String unit2_store= "off";
+String unit3_store= "off";
+String unit4_store= "off";
+String unit1_retrieve= "off";
+String unit2_retrieve= "off";
+String unit3_retrieve= "off";
+String unit4_retrieve= "off";
+
+// Assign output variables to GPIO pins
+
+// Motor A - VERTICAL MOV 1
+int output17 = 17; 
+int output16 = 16; 
+int enable1Pin = 4; 
+
+// Motor B - VERTICAL MOV 2
+
+int output18 = 18;
+int output19 = 19;
+int enable2Pin = 21;
+
+
+// Motor C - GRAB MOV
+
+int output14 = 14;
+int output12 = 12;
+int enable3Pin = 13;
+
+// Motor D - HORIZONTAL MOV
+
+int output27 = 27;
+int output26 = 26;
+int enable4Pin = 25;
+
+// Setting PWM properties
+const int freq = 30000;
+const int pwmChannel = 0;
+const int resolution = 8;
+int dutyCycle = 200;
+
+void setup() {
+  Serial.begin(115200);
+  // Initialize the output variables as outputs
+
+  //MOTOR A
+  pinMode(output17, OUTPUT);
+  pinMode(output16, OUTPUT);
+  pinMode(enable1Pin, OUTPUT);
+
+  //MOTOR B
+  pinMode(output18, OUTPUT);
+  pinMode(output19, OUTPUT);
+  pinMode(enable2Pin, OUTPUT);
+
+  
+  //MOTOR C
+  pinMode(output14, OUTPUT);
+  pinMode(output12, OUTPUT);
+  pinMode(enable3Pin, OUTPUT);
+
+  //MOTOR D
+  pinMode(output27, OUTPUT);
+  pinMode(output26, OUTPUT);
+  pinMode(enable4Pin, OUTPUT);
+
+  // Set outputs to LOW
+  digitalWrite(output17, LOW);
+  digitalWrite(output16, LOW);
+  
+  digitalWrite(output18, LOW);
+  digitalWrite(output19, LOW);
+
+  digitalWrite(output14, LOW);
+  digitalWrite(output12, LOW);
+
+  digitalWrite(output27, LOW);
+  digitalWrite(output26, LOW);
+
+  ledcAttachChannel(enable1Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable2Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable3Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable4Pin, freq, resolution, pwmChannel);
+
+    
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Setting AP (Access Point)…");
+  // Remove the password parameter, if you want the AP (Access Point) to be open
+  WiFi.softAP(ssid, password);
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+  
+  server.begin();
+}
+
+void loop(){
+  WiFiClient client = server.available();   // Listen for incoming clients
+
+  if (client) {                             // If a new client connects,
+    Serial.println("New Client.");          // print a message out in the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+      if (client.available()) {             // if there's bytes to read from the client,
+        char c = client.read();             // read a byte, then
+        Serial.write(c);                    // print it out the serial monitor
+        header += c;
+        if (c == '\n') {                    // if the byte is a newline character
+          // if the current line is blank, you got two newline characters in a row.
+          // that's the end of the client HTTP request, so send a response:
+          if (currentLine.length() == 0) {
+            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+            // and a content-type so the client knows what's coming, then a blank line:
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type:text/html");
+            client.println("Connection: close");
+            client.println();
+
+            // sequences & timings
+
+            
+            if (header.indexOf("GET /UNIT1/retrieve") >= 0) {
+                Serial.println("Unit 1 Retrieving...");
+                unit1_retrieve = "on";
+                //GO UP
+                digitalWrite(output17, HIGH);
+                analogWrite(output17, dutyCycle);
+                digitalWrite(output18, HIGH);
+                analogWrite(output18, dutyCycle - 10); //offset for slower motor
+                delay(8000);
+                //TURN OFF UP MOTION
+                digitalWrite(output17, LOW);
+                analogWrite(output17, 0);
+                digitalWrite(output18, LOW);
+                analogWrite(output18, 0); 
+                //PUSH OUT GRABBER
+                digitalWrite(output14, HIGH);
+                analogWrite(output14, dutyCycle);
+                delay(3000);
+                //RAISE AGAIN, TO COLLECT CRATE
+                  //TURN OFF GRABBER
+                  digitalWrite(output14, LOW);
+                  analogWrite(output14, 0);
+                digitalWrite(output17, HIGH);
+                analogWrite(output17, dutyCycle);
+                digitalWrite(output18, HIGH);
+                analogWrite(output18, dutyCycle - 10); //offset for slower motor
+                delay(1000);
+                //TURN OFF UP MOTION
+                digitalWrite(output17, LOW);
+                analogWrite(output17, 0);
+                digitalWrite(output18, LOW);
+                analogWrite(output18, 0);
+                //PULL OUT GRABBER
+                digitalWrite(output12, HIGH);
+                analogWrite(output12, dutyCycle);
+                delay(3000);
+                //TURN OFF GRABBER
+                digitalWrite(output12, HIGH);
+                analogWrite(output12, dutyCycle);
+                delay(3000);
+                //GO DOWN TO HOME
+                digitalWrite(output19, HIGH);
+                analogWrite(output19, dutyCycle);
+                digitalWrite(output16, HIGH);
+                analogWrite(output16, dutyCycle - 10); //offset for slower motor
+                delay(8000);
+                //END
+                digitalWrite(output19, LOW);
+                analogWrite(output19, 0);
+                digitalWrite(output16, LOW);
+                analogWrite(output16, 0); //offset for slower motor
+                delay(8000);
+
+              
+            } else if (header.indexOf("GET /UNIT1/store") >= 0) {
+                Serial.println("Unit 1 Storing...");
+                unit1_store = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            } else if (header.indexOf("GET /UNIT1/off") >= 0) {
+                Serial.println("Unit 1 off");
+                unit1_store = "off";
+                unit1_retrieve = "off";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            } else if (header.indexOf("GET /UNIT2/retrieve") >= 0) {
+                Serial.println("Unit 2 Retrieving...");
+                unit2_retrieve = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc;
+
+            } else if (header.indexOf("GET /UNIT2/store") >= 0) {
+                Serial.println("Unit 2 Storing...");
+                unit2_store = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc;
+            
+            } else if (header.indexOf("GET /UNIT2/off") >= 0) {
+                Serial.println("Unit 2 off");
+                unit2_store = "off";
+                unit2_retrieve = "off";
+                
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+            
+            } else if (header.indexOf("GET /UNIT3/retrieve") >= 0) {
+                Serial.println("Unit 3 Retrieving...");
+                unit3_retrieve = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc;
+
+            } else if (header.indexOf("GET /UNIT3/store") >= 0) {
+                Serial.println("Unit 3 Storing...");
+                unit3_store = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            } else if (header.indexOf("GET /UNIT3/off") >= 0) {
+                Serial.println("Unit 3 off");
+                unit3_store = "off";
+                unit3_retrieve = "off";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            } else if (header.indexOf("GET /UNIT4/retrieve") >= 0) {
+                Serial.println("Unit 4 Retrieving...");
+                unit4_retrieve = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc;
+
+            } else if (header.indexOf("GET /UNIT4/store") >= 0) {
+                Serial.println("Unit 4 Storing...");
+                unit4_store = "on";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            } else if (header.indexOf("GET /UNIT4/off") >= 0) {
+                Serial.println("Unit 4 off");
+                unit4_store = "off";
+                unit4_retrieve = "off";
+                //digitalWrite(,);
+                //analogWrite(,);
+                //delay(..); etc
+
+            }
+
+
+client.println("<!DOCTYPE html><html>");
+client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+client.println("<link rel=\"icon\" href=\"data:,\">");
+client.println("<style>html { font-family: monospace; display: inline-block; margin: 0px auto; text-align: center;}");
+client.println(".container { display: inline-grid; grid-template-columns: repeat(2, 1fr); grid-gap: 0px; padding: 20px;}");
+client.println(".unit-header { grid-column: span 2; font-size: 24px; font-weight: bold;  justify-content: center; align-items: center;}");
+client.println(".button { padding: 16px 40px; font-size: 20px; margin: 5px; cursor: pointer; border: none; color: white;}");
+client.println(".button.store { background-color: #FF6347; }"); // Muted red for "Store"
+client.println(".button.retrieve { background-color: #4CAF50; }"); // Green for "Retrieve"
+client.println(".button.disabled { background-color: #A9A9A9; cursor: pointer; border: none; color: white;}"); // Grey for disabled buttons
+client.println("</style></head>");
+client.println("<body><h1>Automated Retrieval and Storage System</h1>");
+
+client.println("<div class=\"container\">");
+
+// Unit 1
+client.println("<div class=\"unit-header\">Unit 1</div>");
+if (unit1_store == "off") {
+    client.println("<div><a href=\"/UNIT1/store\"><button id=\"unit1-store\" class=\"button store\">Store</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT1/off\"><button id=\"unit1-store-off\" class=\"button off\">Store</button></a></div>");
+}
+
+if (unit1_retrieve == "off") {
+    client.println("<div><a href=\"/UNIT1/retrieve\"><button id=\"unit1-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT1/off\"><button id=\"unit1-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
+}
+
+// Unit 2
+client.println("<div class=\"unit-header\">Unit 2</div>");
+if (unit2_store == "off") {
+    client.println("<div><a href=\"/UNIT2/store\"><button id=\"unit2-store\" class=\"button store\">Store</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-store-off\" class=\"button off\">Store</button></a></div>");
+}
+
+if (unit2_retrieve == "off") {
+    client.println("<div><a href=\"/UNIT2/retrieve\"><button id=\"unit2-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
+}
+
+// Unit 3
+client.println("<div class=\"unit-header\">Unit 3</div>");
+if (unit3_store == "off") {
+    client.println("<div><a href=\"/UNIT3/store\"><button id=\"unit3-store\" class=\"button store\">Store</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT3/off\"><button id=\"unit3-store-off\" class=\"button off\">Store</button></a></div>");
+}
+
+if (unit3_retrieve == "off") {
+    client.println("<div><a href=\"/UNIT3/retrieve\"><button id=\"unit3-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT3/off\"><button id=\"unit3-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
+}
+
+// Unit 4
+client.println("<div class=\"unit-header\">Unit 4</div>");
+if (unit4_store == "off") {
+    client.println("<div><a href=\"/UNIT4/store\"><button id=\"unit4-store\" class=\"button store\">Store</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT4/off\"><button id=\"unit4-store-off\" class=\"button off\">Store</button></a></div>");
+}
+
+if (unit4_retrieve == "off") {
+    client.println("<div><a href=\"/UNIT4/retrieve\"><button id=\"unit4-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT4/off\"><button id=\"unit4-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
+}
+
+client.println("</div>");
+
+
+// Javascript for handling button state change (turning grey when pressed)
+
+client.println("</body></html>");
+            client.println();
+
+
+            break;
+          } else { // if you got a newline, then clear currentLine
+            currentLine = "";
+          }
+    } else if (c != '\r') {  // if you got anything else but a carriage return character,
+          currentLine += c;      // add it to the end of the currentLine
+        }
+      }
+    }
+    // Clear the header variable
+    header = "";
+    // Close the connection
+    client.stop();
+    Serial.println("Client disconnected.");
+    Serial.println("");
+  }
+} 
+        
+        
+        
+    
