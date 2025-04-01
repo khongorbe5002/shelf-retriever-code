@@ -135,7 +135,7 @@ void loop(){
             // sequences & timings
 
             
-            if (header.indexOf("GET /UNIT1/retrieve") >= 0) {
+            if (header.indexOf("GET /unit1/retrieve") >= 0) {
                 Serial.println("Unit 1 Retrieving...");
                 unit1 = "retrieve";
                 digitalWrite(output17, HIGH);
@@ -145,77 +145,77 @@ void loop(){
                 delay(1000);
               
               
-            } else if (header.indexOf("GET /UNIT1/store") >= 0) {
+            } else if (header.indexOf("GET /unit1/store") >= 0) {
                 Serial.println("Unit 1 Storing...");
                 unit1 = "store";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
 
-            } else if (header.indexOf("GET /UNIT1/off") >= 0) {
+            } else if (header.indexOf("GET /unit1/off") >= 0) {
                 Serial.println("Unit 1 off");
                 unit1 = "off";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
 
-            } else if (header.indexOf("GET /UNIT2/retrieve") >= 0) {
+            } else if (header.indexOf("GET /unit2/retrieve") >= 0) {
                 Serial.println("Unit 2 Retrieving...");
                 unit2 = "retrieve";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc;
 
-            } else if (header.indexOf("GET /UNIT2/store") >= 0) {
+            } else if (header.indexOf("GET /unit2/store") >= 0) {
                 Serial.println("Unit 2 Storing...");
                 unit2 = "store";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc;
             
-            } else if (header.indexOf("GET /UNIT2/off") >= 0) {
+            } else if (header.indexOf("GET /unit2/off") >= 0) {
                 Serial.println("Unit 2 off");
                 unit2 = "off";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
             
-            } else if (header.indexOf("GET /UNIT3/retrieve") >= 0) {
+            } else if (header.indexOf("GET /unit3/retrieve") >= 0) {
                 Serial.println("Unit 3 Retrieving...");
                 unit3 = "retrieve";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc;
 
-            } else if (header.indexOf("GET /UNIT3/store") >= 0) {
+            } else if (header.indexOf("GET /unit3/store") >= 0) {
                 Serial.println("Unit 3 Storing...");
                 unit3 = "store";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
 
-            } else if (header.indexOf("GET /UNIT3/off") >= 0) {
+            } else if (header.indexOf("GET /unit3/off") >= 0) {
                 Serial.println("Unit 3 off");
                 unit3 = "off";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
 
-            } else if (header.indexOf("GET /UNIT4/retrieve") >= 0) {
+            } else if (header.indexOf("GET /unit4/retrieve") >= 0) {
                 Serial.println("Unit 4 Retrieving...");
                 unit4 = "retrieve";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc;
 
-            } else if (header.indexOf("GET /UNIT4/store") >= 0) {
+            } else if (header.indexOf("GET /unit4/store") >= 0) {
                 Serial.println("Unit 4 Storing...");
                 unit4 = "store";
                 //digitalWrite(,);
                 //analogWrite(,);
                 //delay(..); etc
 
-            } else if (header.indexOf("GET /UNIT4/off") >= 0) {
+            } else if (header.indexOf("GET /unit4/off") >= 0) {
                 Serial.println("Unit 4 off");
                 unit4 = "off";
                 //digitalWrite(,);
@@ -304,15 +304,15 @@ client.println("<body>");
         
         client.println(     "<div id=\"flexbox2\" class=\"content\">");
         client.println(         "<p>UNIT 1</span></p>");
-                                if (unit1 =="retrieve"){
+                                if (unit1 =="off"){
                                     // button3 indicates operation
-        client.println(         "<p><a href=\"/unit1/retrieve\"><button class=\"button button3\">RETRIEVE</button></a>");
-        client.println(         "<button class=\"button button2\">STORE</button></p>");
+        client.println(         "<p><a href=\"/unit1/retrieve\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(         "<a href=\"/unit1/store\"><button class=\"button button2\">STORE</button></a></p>");
                                 }   else if (unit1 == "store"){
         client.println(         "<p><button class=\"button\">RETRIEVE</button>");
-        client.println(         "<a href=\"/unit1/store\"><button class=\"button button3\">STORE</button></a></p>");
+        client.println(         "<a href=\"/unit1/off\"><button class=\"button button3\">STORE</button></a></p>");
                                 }   else {
-        client.println(             "<p><a href=\"/unit1/off\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(             "<p><a href=\"/unit1/off\"><button class=\"button button3\">RETRIEVE</button></a>");
         client.println(             "<button class=\"button button2\">STORE</button></p>");
                                         }        
         client.println(     "</div>");
@@ -321,15 +321,15 @@ client.println("<body>");
 
         client.println(     "<div id=\"flexbox2\" class=\"content\">");
         client.println(         "<p>UNIT 2</span></p>");
-                                if (unit2 =="retrieve"){
+                                if (unit2 =="off"){
                                     // button3 indicates operation
-        client.println(         "<p><a href=\"/unit2/retrieve\"><button class=\"button button3\">RETRIEVE</button></a>");
-        client.println(         "<button class=\"button button2\">STORE</button></p>");
+        client.println(         "<p><a href=\"/unit2/retrieve\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(         "<a href=\"/unit2/store\"><button class=\"button button2\">STORE</button></a></p>");
                                 }   else if (unit2 == "store"){
         client.println(         "<p><button class=\"button\">RETRIEVE</button>");
-        client.println(         "<a href=\"/unit2/store\"><button class=\"button button3\">STORE</button></a></p>");
+        client.println(         "<a href=\"/unit2/off\"><button class=\"button button3\">STORE</button></a></p>");
                                 }   else {
-        client.println(             "<p><a href=\"/unit2/off\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(             "<p><a href=\"/unit2/off\"><button class=\"button button3\">RETRIEVE</button></a>");
         client.println(             "<button class=\"button button2\">STORE</button></p>");
                                         }        
         client.println(     "</div>");
@@ -344,15 +344,15 @@ client.println("<body>");
 
         client.println(     "<div id=\"flexbox2\" class=\"content\">");
         client.println(         "<p>UNIT 3</span></p>");
-                                if (unit3 =="retrieve"){
+                                if (unit3 =="off"){
                                     // button3 indicates operation
-        client.println(         "<p><a href=\"/unit3/retrieve\"><button class=\"button button3\">RETRIEVE</button></a>");
-        client.println(         "<button class=\"button button2\">STORE</button></p>");
+        client.println(         "<p><a href=\"/unit3/retrieve\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(         "<a href=\"/unit3/store\"><button class=\"button button2\">STORE</button></a></p>");
                                 }   else if (unit3 == "store"){
         client.println(         "<p><button class=\"button\">RETRIEVE</button>");
-        client.println(         "<a href=\"/unit3/store\"><button class=\"button button3\">STORE</button></a></p>");
+        client.println(         "<a href=\"/unit3/off\"><button class=\"button button3\">STORE</button></a></p>");
                                 }   else {
-        client.println(             "<p><a href=\"/unit3/off\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(             "<p><a href=\"/unit3/off\"><button class=\"button button3\">RETRIEVE</button></a>");
         client.println(             "<button class=\"button button2\">STORE</button></p>");
                                         }        
         client.println(     "</div>");
@@ -361,18 +361,19 @@ client.println("<body>");
 
         client.println(     "<div id=\"flexbox2\" class=\"content\">");
         client.println(         "<p>UNIT 4</span></p>");
-                                if (unit4 =="retrieve"){
+                                if (unit4 =="off"){
                                     // button3 indicates operation
-        client.println(         "<p><a href=\"/unit4/retrieve\"><button class=\"button button3\">RETRIEVE</button></a>");
-        client.println(         "<button class=\"button button2\">STORE</button></p>");
+        client.println(         "<p><a href=\"/unit4/retrieve\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(         "<a href=\"/unit4/store\"><button class=\"button button2\">STORE</button></a></p>");
                                 }   else if (unit4 == "store"){
         client.println(         "<p><button class=\"button\">RETRIEVE</button>");
-        client.println(         "<a href=\"/unit4/store\"><button class=\"button button3\">STORE</button></a></p>");
+        client.println(         "<a href=\"/unit4/off\"><button class=\"button button3\">STORE</button></a></p>");
                                 }   else {
-        client.println(             "<p><a href=\"/unit4/off\"><button class=\"button\">RETRIEVE</button></a>");
+        client.println(             "<p><a href=\"/unit4/off\"><button class=\"button button3\">RETRIEVE</button></a>");
         client.println(             "<button class=\"button button2\">STORE</button></p>");
                                         }        
         client.println(     "</div>");
+
     
     //formatting
 
