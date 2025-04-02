@@ -6,7 +6,7 @@
 #include <driver/ledc.h>
 
 // Replace with your network credentials
-const char* ssid     = "ESP32-B";
+const char* ssid     = "ESP32-Access-Point-1";
 const char* password = "123456789";
 
 // Set web server port number to 80
@@ -35,35 +35,39 @@ String output25State = "off";
 // Assign output variables to GPIO pins
 
 // Motor A
-int output17 = 17; 
-int output16 = 16; 
-int enable1Pin = 4; 
+int output17 = 14; 
+int output16 = 12; 
+int enable1Pin = 13; 
 
 // Motor B
 
-int output18 = 18;
-int output19 = 19;
-int enable2Pin = 21;
+int output18 = 22;
+int output19 = 23;
+int enable2Pin = 27;
 
 
 // Motor C
 
-int output14 = 14;
-int output12 = 12;
-int enable3Pin = 13;
+int output14 = 17;
+int output12 = 16;
+int enable3Pin = 4;
 
 // Motor D
 
-int output27 = 32;
-int output26 = 33;
-int enable4Pin = 25;
+int output27 = 18;
+int output26 = 19;
+int enable4Pin = 21;
 
 // Setting PWM properties
 const int freq = 30000;
 const int pwmChannel = 0;
 const int resolution = 8;
 int dutyCycle = 200;
-int dutyCycleC = 200;
+int dutyCycleC = 255;
+int dutyCycleD = 167;
+int dutyCycleB = 255;
+int dutyCycleA = 0;
+//int dutyCycleA2 = 255;
 
 
 void setup() {
@@ -158,10 +162,10 @@ void loop(){
               Serial.println("GPIO 17 on");
               output17State = "on";
               digitalWrite(output17, HIGH);
-              analogWrite(enable1Pin, dutyCycle);
+              analogWrite(enable1Pin, dutyCycleA); // up?
               output18State = "on";
               digitalWrite(output18, HIGH);
-              analogWrite(enable2Pin, dutyCycle);
+              analogWrite(enable2Pin, dutyCycleB);
               //ledcWrite(pwmChannel, dutyCycle);
               
             } else if (header.indexOf("GET /17/off") >= 0) {
@@ -178,18 +182,18 @@ void loop(){
               Serial.println("GPIO 16 on");
               output16State = "on";
               digitalWrite(output16, HIGH);
-              analogWrite(enable1Pin, dutyCycle);
+              analogWrite(enable1Pin, dutyCycleA); //down?
               output19State = "on";
               digitalWrite(output19, HIGH);
-              analogWrite(enable2Pin, dutyCycle);
+              analogWrite(enable2Pin, dutyCycleB);
               //ledcWrite(pwmChannel, dutyCycle);
+            
             } else if (header.indexOf("GET /16/off") >= 0) {
               Serial.println("GPIO 16 off");
               output16State = "off";
               digitalWrite(output16, LOW);
               analogWrite(enable1Pin, 0);
               output19State = "off";
-              digitalWrite(output19, LOW);
               analogWrite(enable2Pin, 0); 
               //ledcWrite(pwmChannel, 0);
               //ledcWrite(pwmChannel, 0);
@@ -197,11 +201,11 @@ void loop(){
               
             // Motor B - 18, 19
               
-            } else if (header.indexOf("GET /18/on") >= 0) {
+            /*} else if (header.indexOf("GET /18/on") >= 0) {
               Serial.println("GPIO 18 on");
               output18State = "on";
               digitalWrite(output18, HIGH);
-              analogWrite(enable2Pin, dutyCycle);
+              analogWrite(enable2Pin, dutyCycleA2);
               //ledcWrite(pwmChannel, dutyCycle);
 
             } else if (header.indexOf("GET /18/off") >= 0) {
@@ -214,13 +218,13 @@ void loop(){
               Serial.println("GPIO 19 on");
               output19State = "on";
               digitalWrite(output19, HIGH);
-              analogWrite(enable2Pin, dutyCycle);
+              analogWrite(enable2Pin, dutyCycleA2);
               //ledcWrite(pwmChannel, dutyCycle);
             } else if (header.indexOf("GET /19/off") >= 0) {
               Serial.println("GPIO 19 off");
               output19State = "off";
               digitalWrite(output19, LOW);
-              analogWrite(enable2Pin, 0); 
+              analogWrite(enable2Pin, 0); */
               //ledcWrite(pwmChannel, 0);
             
 
@@ -256,7 +260,7 @@ void loop(){
               Serial.println("GPIO 27 on");
               output27State = "on";
               digitalWrite(output27, HIGH);
-              analogWrite(enable4Pin, dutyCycle);
+              analogWrite(enable4Pin, dutyCycleD);
             } else if (header.indexOf("GET /27/off") >= 0) {
               Serial.println("GPIO 27 off");
               output27State = "off";
@@ -266,7 +270,7 @@ void loop(){
               Serial.println("GPIO 26 on");
               output26State = "on";
               digitalWrite(output26, HIGH);
-              analogWrite(enable4Pin, dutyCycle);
+              analogWrite(enable4Pin, dutyCycleD);
             } else if (header.indexOf("GET /26/off") >= 0) {
               Serial.println("GPIO 26 off");
               output26State = "off";
@@ -311,7 +315,7 @@ void loop(){
 
 
             // MOTOR B - CONTROLS - 18, 19
-
+/*
             client.println("<p>MOTOR B - LEFT" + output18State + "</p>");
             if (output18State=="off") {
               client.println("<p><a href=\"/18/on\"><button class=\"button\">ON</button></a></p>");
@@ -324,7 +328,7 @@ void loop(){
               client.println("<p><a href=\"/19/on\"><button class=\"button\">ON</button></a></p>");
             } else {
               client.println("<p><a href=\"/19/off\"><button class=\"button button2\">OFF</button></a></p>");
-            }
+            }*/
 
 
             // MOTOR C - CONTROLS - 14, 12
