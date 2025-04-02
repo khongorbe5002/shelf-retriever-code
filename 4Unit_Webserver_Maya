@@ -6,7 +6,7 @@
 #include <driver/ledc.h>
 
 // Replace with your network credentials
-const char* ssid     = "ESP32-Access-Point-1";
+const char* ssid     = "CHARLES";
 const char* password = "123456789";
 
 // Set web server port number to 80
@@ -284,17 +284,23 @@ client.println("<link rel=\"icon\" href=\"data:,\">");
 
 // CSS Styles
 client.println("<style>");
-client.println("html { font-family: monospace; display: inline-block; margin: 0px auto; text-align: center; position: relative;}");
-client.println(".square { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 55%; height: 550px; background-color: #B3CBB3; border-radius: 50px; z-index: -1; }");
+client.println("html { font-family: monospace; display: inline-block; margin: 50px auto; text-align: center; position: relative;}");
+client.println(".square { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background-color: #B3CBB3; border-radius: 50px; z-index: -1; }");
 client.println(".container { display: inline-grid; grid-template-columns: repeat(2, 1fr); grid-gap: 0px; padding: 20px; position: relative;}");
 client.println(".unit-header { grid-column: span 2; font-size: 30px; font-weight: bold; justify-content: center; align-items: center; top: 25px}");
-client.println(".button { font-family: monospace; padding: 16px 40px; font-size: 20px; margin: 5px; cursor: pointer; border: none; color: white;}");
+client.println(".button { font-family: monospace;  width: 150px; height: 50px; font-size: 20px; margin: 5px; cursor: pointer; border: none; color: white;}");
 client.println(".button.store { background-color: #8E1F27; }"); // Muted red for "Store"
 client.println(".button.retrieve { background-color: #1C6A3F; }"); // Green for "Retrieve"
 client.println(".button.off { background-color: #646259; cursor: pointer; border: none; color: white;}"); // Grey for disabled buttons
+client.println("#col_align {display: flex; flex-direction: column; align-items: center; column-gap: 10px; justify-content: center; width: 100%;}");// aligning it vertically
+client.println("#row_align {display: flex; flex-wrap: wrap; justify-content: space-evenly; row-gap: 20px; width: 100%;}");//align horizontally
+client.println(".spacer {padding top: 100px;}");
+
+
 client.println("</style></head>");
 
-client.println("<body><h1>Automated Retrieval and Storage System</h1>");
+client.println("<body><h1 class=\"spacer\">Automated Retrieval and Storage System</h1>");
+client.println("<p> By Maya, Katie, Jona, Gabbie, Chelsea, Honey</p>");
 
 // Add the light green square background
 client.println("<div class='square'></div>");
@@ -302,7 +308,13 @@ client.println("<div class='square'></div>");
 // Start button container
 client.println("<div class=\"container\">");
 
+//row align
+client.println("<div id=\"row_align\">");
+
+
+
 // Unit 1
+client.println("<div id=\"col_align\">");
 client.println("<div class=\"unit-header\">Unit 1</div>");
 if (unit1_store == "off") {
     client.println("<div><a href=\"/UNIT1/store\"><button id=\"unit1-store\" class=\"button store\">Store</button></a></div>");
@@ -315,22 +327,11 @@ if (unit1_retrieve == "off") {
 } else {
     client.println("<div><a href=\"/UNIT1/off\"><button id=\"unit1-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
 }
-
-// Unit 2
-client.println("<div class=\"unit-header\">Unit 2</div>");
-if (unit2_store == "off") {
-    client.println("<div><a href=\"/UNIT2/store\"><button id=\"unit2-store\" class=\"button store\">Store</button></a></div>");
-} else {
-    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-store-off\" class=\"button off\">Store</button></a></div>");
-}
-
-if (unit2_retrieve == "off") {
-    client.println("<div><a href=\"/UNIT2/retrieve\"><button id=\"unit2-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
-} else {
-    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
-}
+client.println(     "</div>");
 
 // Unit 3
+client.println("<div id=\"col_align\">");
+
 client.println("<div class=\"unit-header\">Unit 3</div>");
 if (unit3_store == "off") {
     client.println("<div><a href=\"/UNIT3/store\"><button id=\"unit3-store\" class=\"button store\">Store</button></a></div>");
@@ -343,8 +344,35 @@ if (unit3_retrieve == "off") {
 } else {
     client.println("<div><a href=\"/UNIT3/off\"><button id=\"unit3-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
 }
+client.println(     "</div>");
+client.println(     "</div>");
+
+
+//row align
+client.println("<div id=\"row_align\">");
+
+// Unit 2
+client.println("<div id=\"col_align\">");
+client.println("<div class=\"unit-header\">Unit 2</div>");
+if (unit2_store == "off") {
+    client.println("<div><a href=\"/UNIT2/store\"><button id=\"unit2-store\" class=\"button store\">Store</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-store-off\" class=\"button off\">Store</button></a></div>");
+}
+
+if (unit2_retrieve == "off") {
+    client.println("<div><a href=\"/UNIT2/retrieve\"><button id=\"unit2-retrieve\" class=\"button retrieve\">Retrieve</button></a></div>");
+} else {
+    client.println("<div><a href=\"/UNIT2/off\"><button id=\"unit2-retrieve-off\" class=\"button off\">Retrieve</button></a></div>");
+}
+client.println(     "</div>");
+
+
+
+
 
 // Unit 4
+client.println("<div id=\"col_align\">");
 client.println("<div class=\"unit-header\">Unit 4</div>");
 if (unit4_store == "off") {
     client.println("<div><a href=\"/UNIT4/store\"><button id=\"unit4-store\" class=\"button store\">Store</button></a></div>");
@@ -360,6 +388,9 @@ if (unit4_retrieve == "off") {
 
 client.println("</div>");
 
+client.println("</div>");
+
+client.println(     "</div>");
 
 // Javascript for handling button state change (turning grey when pressed)
 
@@ -384,7 +415,12 @@ client.println("</body></html>");
     Serial.println("");
   }
 } 
+       
         
+            
+
+
+            
         
         
             
