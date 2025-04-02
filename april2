@@ -1,0 +1,389 @@
+
+
+// Load Wi-Fi library
+#include <WiFi.h>
+#include <Arduino.h>
+#include <driver/ledc.h>
+
+// Replace with your network credentials
+const char* ssid     = "ESP32-Access-Point-1";
+const char* password = "123456789";
+
+// Set web server port number to 80
+WiFiServer server(80);
+
+// Variable to store the HTTP request
+String header;
+
+// Auxiliar variables to store the current output state
+String output17State = "off";
+String output16State = "off";
+String output4State = "off";
+
+String output18State = "off";
+String output19State = "off";
+String output21State = "off";
+
+String output14State = "off";
+String output12State = "off";
+String output13State = "off";
+
+String output27State = "off";
+String output26State = "off";
+String output25State = "off";
+
+// Assign output variables to GPIO pins
+
+// Motor A
+int output17 = 14; 
+int output16 = 12; 
+int enable1Pin = 13; 
+
+// Motor B
+
+int output18 = 22;
+int output19 = 23;
+int enable2Pin = 27;
+
+
+// Motor C
+
+int output14 = 17;
+int output12 = 16;
+int enable3Pin = 4;
+
+// Motor D
+
+int output27 = 18;
+int output26 = 19;
+int enable4Pin = 21;
+
+// Setting PWM properties
+const int freq = 30000;
+const int pwmChannel = 0;
+const int resolution = 8;
+int dutyCycle = 200;
+int dutyCycleC = 200;
+int dutyCycleD = 255;
+int dutyCycleB_up = 200;
+int dutyCycleA_up = 230;
+int dutyCycleB_down = 150;
+int dutyCycleA_down = 230;
+
+void setup() {
+  Serial.begin(115200);
+  // Initialize the output variables as outputs
+
+  //MOTOR A
+  pinMode(output17, OUTPUT);
+  pinMode(output16, OUTPUT);
+  pinMode(enable1Pin, OUTPUT);
+
+  //MOTOR B
+  pinMode(output18, OUTPUT);
+  pinMode(output19, OUTPUT);
+  pinMode(enable2Pin, OUTPUT);
+
+  
+  //MOTOR C
+  pinMode(output14, OUTPUT);
+  pinMode(output12, OUTPUT);
+  pinMode(enable3Pin, OUTPUT);
+
+  //MOTOR D
+  pinMode(output27, OUTPUT);
+  pinMode(output26, OUTPUT);
+  pinMode(enable4Pin, OUTPUT);
+
+  // Set outputs to LOW
+  digitalWrite(output17, LOW);
+  digitalWrite(output16, LOW);
+  
+  digitalWrite(output18, LOW);
+  digitalWrite(output19, LOW);
+
+  digitalWrite(output14, LOW);
+  digitalWrite(output12, LOW);
+
+  digitalWrite(output27, LOW);
+  digitalWrite(output26, LOW);
+
+  //ledcSetup(pwmChannel, freq, resolution);
+  //ledcAttachPin(enable1Pin, pwmChannel);
+  //ledcAttachPin(enable2Pin, pwmChannel);
+  //ledcAttachPin(enable3Pin, pwmChannel);
+  //ledcAttachPin(enable4Pin, pwmChannel);
+
+  ledcAttachChannel(enable1Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable2Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable3Pin, freq, resolution, pwmChannel);
+  ledcAttachChannel(enable4Pin, freq, resolution, pwmChannel);
+
+    
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Setting AP (Access Point)…");
+  // Remove the password parameter, if you want the AP (Access Point) to be open
+  WiFi.softAP(ssid, password);
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+  
+  server.begin();
+}
+
+void loop(){
+  WiFiClient client = server.available();   // Listen for incoming clients
+
+  if (client) {                             // If a new client connects,
+    Serial.println("New Client.");          // print a message out in the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+      if (client.available()) {             // if there's bytes to read from the client,
+        char c = client.read();             // read a byte, then
+        Serial.write(c);                    // print it out the serial monitor
+        header += c;
+        if (c == '\n') {                    // if the byte is a newline character
+          // if the current line is blank, you got two newline characters in a row.
+          // that's the end of the client HTTP request, so send a response:
+          if (currentLine.length() == 0) {
+            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+            // and a content-type so the client knows what's coming, then a blank line:
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type:text/html");
+            client.println("Connection: close");
+            client.println();
+            
+            // turns the GPIOs on and off - 
+            
+            //Motor A - 17, 16
+            
+            if (header.indexOf("GET /17/on") >= 0) {
+              
+              output17State = "on";
+              digitalWrite(output17, HIGH);
+              analogWrite(enable1Pin, dutyCycleA_down); 
+              
+              output18State = "on";
+              digitalWrite(output18, HIGH);
+              analogWrite(enable2Pin, dutyCycleB_down);
+              
+            } else if (header.indexOf("GET /17/off") >= 0) {
+
+              output17State = "off";
+              digitalWrite(output17, LOW);
+              
+              output18State = "off";
+              digitalWrite(output18, LOW);
+
+            } else if (header.indexOf("GET /16/on") >= 0) {
+              
+              output16State = "on";
+              digitalWrite(output16, HIGH);
+              analogWrite(enable1Pin, dutyCycleA_up); 
+              
+              output19State = "on";
+              digitalWrite(output19, HIGH);
+              analogWrite(enable2Pin, dutyCycleB_up);
+            
+            } else if (header.indexOf("GET /16/off") >= 0) {
+              
+              output16State = "off";
+              digitalWrite(output16, LOW);
+  
+              output19State = "off"; 
+              digitalWrite(output19, LOW);
+              
+              //ledcWrite(pwmChannel, 0);
+              //ledcWrite(pwmChannel, 0);
+
+              
+            // Motor B - 18, 19
+              
+            /*} else if (header.indexOf("GET /18/on") >= 0) {
+              Serial.println("GPIO 18 on");
+              output18State = "on";
+              digitalWrite(output18, HIGH);
+              analogWrite(enable2Pin, dutyCycleA2);
+              //ledcWrite(pwmChannel, dutyCycle);
+
+            } else if (header.indexOf("GET /18/off") >= 0) {
+              Serial.println("GPIO 18 off");
+              output18State = "off";
+              digitalWrite(output18, LOW);
+              analogWrite(enable2Pin, 0);
+              //ledcWrite(pwmChannel, 0);
+            } else if (header.indexOf("GET /19/on") >= 0) {
+              Serial.println("GPIO 19 on");
+              output19State = "on";
+              digitalWrite(output19, HIGH);
+              analogWrite(enable2Pin, dutyCycleA2);
+              //ledcWrite(pwmChannel, dutyCycle);
+            } else if (header.indexOf("GET /19/off") >= 0) {
+              Serial.println("GPIO 19 off");
+              output19State = "off";
+              digitalWrite(output19, LOW);
+              analogWrite(enable2Pin, 0); */
+              //ledcWrite(pwmChannel, 0);
+            
+
+
+            // Motor C - 14, 12
+              
+            } else if (header.indexOf("GET /14/on") >= 0) {
+              Serial.println("GPIO 14 on");
+              output14State = "on";
+              digitalWrite(output14, HIGH);
+              analogWrite(enable3Pin, dutyCycleC); 
+            } else if (header.indexOf("GET /14/off") >= 0) {
+              Serial.println("GPIO 14 off");
+              output14State = "off";
+              digitalWrite(output14, LOW);
+              analogWrite(enable3Pin, 0); 
+            } else if (header.indexOf("GET /12/on") >= 0) {
+              Serial.println("GPIO 12 on");
+              output12State = "on";
+              digitalWrite(output12, HIGH);
+              analogWrite(enable3Pin, dutyCycleC);
+              
+            } else if (header.indexOf("GET /12/off") >= 0) {
+              Serial.println("GPIO 12 off");
+              output12State = "off";
+              digitalWrite(output12, LOW);
+              analogWrite(enable3Pin, 0);
+
+
+            // Motor D - 27, 26
+              
+            } else if (header.indexOf("GET /27/on") >= 0) {
+              
+              output27State = "on";
+              digitalWrite(output27, HIGH);
+              analogWrite(enable4Pin, dutyCycleD);
+              
+            } else if (header.indexOf("GET /27/off") >= 0) {
+              
+              output27State = "off";
+              digitalWrite(output27, LOW);
+              
+            } else if (header.indexOf("GET /26/on") >= 0) {
+              
+              output26State = "on";
+              digitalWrite(output26, HIGH);
+              analogWrite(enable4Pin, dutyCycleD);
+              
+            } else if (header.indexOf("GET /26/off") >= 0) {
+              output26State = "off";
+              digitalWrite(output26, LOW); 
+
+            }
+
+            
+            // Display the HTML web page
+            client.println("<!DOCTYPE html><html>");
+            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            client.println("<link rel=\"icon\" href=\"data:,\">");
+            // CSS to style the on/off buttons 
+            // Feel free to change the background-color and font-size attributes to fit your preferences
+            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
+            client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
+            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
+            client.println(".button2 {background-color: #555555;}</style></head>");
+            
+            // Web Page Heading
+            client.println("<body><h1>ESP32 Web Server</h1>");
+
+
+
+            //MOTOR A - CONTROLS - 17, 16
+            
+            client.println("<p>MOTOR A - DOWN " + output17State + "</p>");
+            if (output17State=="off") {
+              client.println("<p><a href=\"/17/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/17/off\"><button class=\"button button2\">OFF</button></a></p>");
+            } 
+               
+            client.println("<p>MOTOR A - UP" + output16State + "</p>");
+
+            if (output16State=="off") {
+              client.println("<p><a href=\"/16/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/16/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+
+            // MOTOR B - CONTROLS - 18, 19
+/*
+            client.println("<p>MOTOR B - LEFT" + output18State + "</p>");
+            if (output18State=="off") {
+              client.println("<p><a href=\"/18/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/18/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+            client.println("<p>MOTOR B - RIGHT " + output19State + "</p>");
+            if (output19State=="off") {
+              client.println("<p><a href=\"/19/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/19/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }*/
+
+
+            // MOTOR C - CONTROLS - 14, 12
+            
+            client.println("<p>MOTOR C - IN " + output14State + "</p>");
+            if (output14State=="off") {
+              client.println("<p><a href=\"/14/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/14/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+            client.println("<p>MOTOR C - OUT " + output12State + "</p>");
+            if (output12State=="off") {
+              client.println("<p><a href=\"/12/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/12/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+
+            // MOTOR D - CONTROLS - 27, 26
+
+            
+            client.println("<p>MOTOR D - RIGHT " + output27State + "</p>");
+            if (output27State=="off") {
+              client.println("<p><a href=\"/27/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/27/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+            client.println("<p>MOTOR D - LEFT " + output26State + "</p>");
+            if (output26State=="off") {
+              client.println("<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
+            }
+
+           
+            client.println("</body></html>");
+            
+            // The HTTP response ends with another blank line
+            client.println();
+            // Break out of the while loop
+            break;
+          } else { // if you got a newline, then clear currentLine
+            currentLine = "";
+          }
+    } else if (c != '\r') {  // if you got anything else but a carriage return character,
+          currentLine += c;      // add it to the end of the currentLine
+        }
+      }
+    }
+    // Clear the header variable
+    header = "";
+    // Close the connection
+    client.stop();
+    Serial.println("Client disconnected.");
+    Serial.println("");
+  }
+}
